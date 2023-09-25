@@ -1,66 +1,77 @@
-import { CSSProperties } from 'react';
 import {
-  type ModalProps as MuiModalProps,
-  Modal as MuiModal,
-  Box,
+  type DialogProps,
   IconButton,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
 } from '@mui/material';
 import { FaXmark } from 'react-icons/fa6';
 
-export interface ModalProps extends Omit<MuiModalProps, 'open' | 'onClose'> {
-  isOpen: MuiModalProps['open'];
+import * as S from './style';
+
+export interface ModalProps extends Omit<DialogProps, 'open' | 'onClose'> {
+  isOpen: DialogProps['open'];
+  modalTitle?: React.ReactNode;
+  modalActions?: React.ReactNode;
   hasCloseButton?: boolean;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  containerStyle?: CSSProperties;
+  size?: DialogProps['maxWidth'];
   handleClose: () => void;
 }
 
-const modalContainerStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  p: 3,
-  borderRadius: 3,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-};
-
-const SIZE = {
-  sm: '24rem',
-  md: '36rem',
-  lg: '48rem',
-  xl: '64rem',
-};
-
 const Modal = ({
   isOpen,
+  modalTitle,
+  modalActions,
   hasCloseButton = true,
   children,
-  size = 'md',
-  containerStyle,
+  size,
   handleClose,
   ...props
 }: ModalProps) => {
   return (
-    <MuiModal {...props} open={isOpen} onClose={handleClose}>
-      <Box
-        width={SIZE[size]}
-        sx={{ ...modalContainerStyle, ...containerStyle }}
-      >
-        {hasCloseButton && (
-          <IconButton
-            color="info"
-            size="small"
-            sx={{ position: 'absolute', top: '1rem', right: '1rem' }}
-            onClick={handleClose}
-          >
-            <FaXmark />
-          </IconButton>
-        )}
-        {children}
-      </Box>
-    </MuiModal>
+    <S.Dialog
+      fullWidth
+      {...props}
+      open={isOpen}
+      maxWidth={size}
+      onClose={handleClose}
+    >
+      {modalTitle && (
+        <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.125rem' }}>
+          {typeof modalTitle === 'string' ? (
+            <Typography
+              component="div"
+              sx={({ palette, spacing }) => ({
+                width: 'fit-content',
+                height: '0.75rem',
+                marginTop: spacing(1.5),
+                backgroundColor: palette.secondary.main,
+                lineHeight: 0,
+                fontSize: 'inherit',
+                fontWeight: 'inherit',
+              })}
+            >
+              {modalTitle}
+            </Typography>
+          ) : (
+            modalTitle
+          )}
+        </DialogTitle>
+      )}
+      {hasCloseButton && (
+        <IconButton
+          aria-label="close"
+          color="info"
+          sx={{ position: 'absolute', top: 8, right: 8 }}
+          onClick={handleClose}
+        >
+          <FaXmark />
+        </IconButton>
+      )}
+      <DialogContent>{children}</DialogContent>
+      {modalActions && <DialogActions>{modalActions}</DialogActions>}
+    </S.Dialog>
   );
 };
 
