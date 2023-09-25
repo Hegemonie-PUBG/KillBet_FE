@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
+import { common, grey } from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
@@ -9,7 +9,9 @@ const theme = createTheme({
     secondary: {
       main: '#dffe07',
     },
-    info: grey,
+    info: {
+      main: grey[400],
+    },
     error: {
       main: '#fe0156',
     },
@@ -18,6 +20,41 @@ const theme = createTheme({
     },
     success: {
       main: '#05dd31',
+    },
+    background: {
+      paper: grey[50],
+    },
+    getContrastText(background) {
+      switch (background) {
+        case 'primary':
+          return common.white;
+        case 'secondary':
+          return common.black;
+        default:
+          return common.black;
+      }
+    },
+  },
+  typography: {
+    fontFamily: 'Pretendard-Regular',
+    button: {
+      fontSize: '1rem',
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        rounded: {
+          borderRadius: 8,
+        },
+      },
     },
   },
 });

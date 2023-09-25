@@ -6,7 +6,7 @@ import {
 
 interface SelectProps extends MuiSelectProps {
   options: {
-    value: any;
+    value: string | number | readonly string[] | undefined;
     name?: string;
   }[];
 }
@@ -14,8 +14,10 @@ interface SelectProps extends MuiSelectProps {
 const Select = ({ options, ...props }: SelectProps) => {
   return (
     <MuiSelect {...props}>
-      {options.map(({ value, name }) => (
-        <MenuItem value={value}>{name ?? value}</MenuItem>
+      {options.map(({ value, name }, index) => (
+        <MenuItem key={`${value}-${index}`} value={value}>
+          {name ?? value}
+        </MenuItem>
       ))}
     </MuiSelect>
   );
